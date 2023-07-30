@@ -17,7 +17,7 @@ Bit6 = Bit0 ⊻ Bit1 ⊻ Bit2 ⊻ Bit4
 Bit7 = ¬(Bit1 ⊻ Bit3 ⊻ Bit4 ⊻ Bit5)  
 (⊻: XOR; ¬: NOT)
 
-Immer nach PID `0x78` und nur dann folgen noch innerhalb des 8,2-ms-Frames zwei weitere Bytes vom Master in UART-Konfiguration 8E1, also Even-Parity. Beide Bytes sind stets identisch, vermutlich zur Fehlererkennung (nicht identisch: Übertragungsfehler). 
+Immer nach PID `0x78` und nur dann folgen noch innerhalb des 8,2-ms-Frames zwei weitere Bytes vom Master in UART-Konfiguration 8E1, also Even-Parity. Beide Bytes sind stets identisch, vermutlich zur Fehlererkennung (nicht identisch: Übertragungsfehler - man kann auch das zweite Byte als bitweise XOR-Checksumme des ersten verstehen wie in der Antwort des Slave, s.u.). 
 
 Nach jedem `0xBA` oder `0x78 0x__ 0x__` und nur dann antwortet der Slave mit je 5 Bytes ebenfalls in 8E1. Das 5. Byte ist eine bitweise [XOR-Checksumme](https://en.wikipedia.org/wiki/Checksum#Parity_byte_or_parity_word) über die anderen 4 Bytes:  
 Byte 5 = Byte 1 ⊻ Byte 2 ⊻ Byte 3 ⊻ Byte 4  
