@@ -3,7 +3,7 @@ Dieser Elektroblock ist in unserm Giottline W63 verbaut. Hier sind meine Erkennt
 ![Bedienteil](Bedienpanel.jpg)
 
 ## Grundlagen des Busses
-Das Bedienteil kommuniziert seriell über einen Draht mit dem Elektroblock. Der physische Layer ist soweit ich sehen kann der des [LIN](https://www.cs-group.de/wp-content/uploads/2016/11/LIN_Specification_Package_2.2A.pdf), es sind LIN-Transceiver im Bedienteil verbaut. Die Frames sind jedoch anders aufgebaut, es gibt z.B. kein Break field und kein Sync field.  
+Das Bedienteil kommuniziert seriell über einen Draht mit dem Elektroblock. Der physische Layer ist soweit ich sehen kann der des [LIN](https://www.cs-group.de/wp-content/uploads/2016/11/LIN_Specification_Package_2.2A.pdf), es sind LIN-Transceiver im Bedienteil verbaut. Die Frames sind jedoch anders aufgebaut, es gibt z.B. kein Break Field und kein Sync Field (evtl. dient das untenstehende `0x55`als solches).  
 Das Bedienfeld ist der Master, der Elektroblock der Slave.  
 Datenübertragung erfolgt mit dem LSB (Bit 0) zuerst.  
 Der Master startet etwa alle 8,2 ms einen Frame mit dem Senden eines von 7 verschiedenen PID-Bytes in UART-Konfiguration 8O1, also Odd-Parity. Die Frameanfänge werden immer in dieser Reihenfolge wiederholt:  
