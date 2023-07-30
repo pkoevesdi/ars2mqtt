@@ -1,8 +1,8 @@
 # Elektroblock ArSilicii CP5L24
-Dieser Elektroblock ist in unserm Giottline W63 verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert. So sieht das Bedienteil von außen aus:
+Dieser Elektroblock ist in unserm Giottline W63 verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert. So sieht das Bedienteil von außen aus:  
 ![Bedienteil](Bedienteil.jpg)
 
-Innenansichten:
+Innenansichten:  
 ![Bedienteil Rückseite](Bedienteil_Rückseite.jpg)
 ![Platine Bedienteil](Platine_Bedienteil.png)
 
