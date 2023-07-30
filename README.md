@@ -44,6 +44,7 @@ Frischwassersensor mittig|2|2
 Frischwassersensor oben|2|3
 Grauwassersensor oben|?|?
 Sicherung draußen|3|1
+Landstrom|?|?
 
 ## Spannungswerte
 In der Antwort des Slave auf PID `0x78`, unabhängig von den 2 Befehlsbytes des Masters, stecken diese Spannungswerte:
