@@ -1,92 +1,54 @@
-# ArSilicii EBL
+# Elektroblock ArSilicii CP5L24
+Dieser Elektroblock ist in unserm Giottline W63 verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert.
+![Bedienteil](Bedienpanel.jpg)
 
+## Grundlagen des Busses
+Das Bedienteil kommuniziert seriell über einen Draht mit dem Elektroblock. Der physische Layer ist soweit ich sehen kann der des [LIN](https://www.cs-group.de/wp-content/uploads/2016/11/LIN_Specification_Package_2.2A.pdf), es sind LIN-Transceiver im Bedienteil verbaut. Die Frames sind jedoch anders aufgebaut, es gibt z.B. kein Break field und kein Sync field.  
+Das Bedienfeld ist der Master, der Elektroblock der Slave.  
+Datenübertragung erfolgt mit dem LSB zuerst.  
+Der Master startet etwa alle 8,2 ms einen Frame mit dem Senden eines von 7 verschiedenen PID-Bytes in UART-Konfiguration 8**O**1, also Odd-Parity. Die Frameanfänge werden immer in dieser Reihenfolge wiederholt:  
+`0x55 0x78 0x49 0xBA 0x55 0xA6 0x8B 0x64`  
+Die PIDs erfüllen die LIN-Partität:  
+Bit6 = Bit0 ⊻ Bit1 ⊻ Bit2 ⊻ Bit4  
+Bit7 = ¬(Bit1 ⊻ Bit3 ⊻ Bit4 ⊻ Bit5)  
+(⊻: XOR; ¬: NOT)
 
+Immer nach PID `0x78` und nur dann folgen noch innerhalb des 8,2-ms-Frames zwei weitere Bytes vom Master in UART-Konfiguration 8**E**1, also Even-Parity. Beide Bytes sind stets identisch, vermutlich zur Fehlererkennung (nicht identisch: Übertragunsfehler). 
 
-## Getting started
+Nach jedem `0xBA` oder `0x78 0x__ 0x__` und nur dann antwortet der Slave mit je 5 Bytes ebenfalls in 8**E**1. Das 5. Byte ist eine bitweise [XOR-Checksumme](https://en.wikipedia.org/wiki/Checksum#Parity_byte_or_parity_word) über die anderen 4 Bytes:  
+Byte 5 = Byte 1 ⊻ Byte 2 ⊻ Byte 3 ⊻ Byte 4  
+Die XOR-Checksumme über alle 5 Bytes ergibt also `0x00` bei korrekter Übertragung.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Schaltbefehle
+Schaltbefehle werden vom Master an den Slave in den beiden o.g. Bytes nach `0x78` übertragen. Innerhalb jedes Bytes haben einzelne Bits die folgende Bedeutung, jeweils '1' schaltet ein, '0' schaltet aus:
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Funktion|Bit #
+---|---
+Pumpe|0
+Licht|1
+Außenlicht|2
+?|7
 
-## Add your files
+Alle anderen Bits sind bei mir bisher immer 0. Das Bedienteil hat auch nur 5 Knöpfe, 2 davon werden nicht an den Slave übermittelt (dienen der lokalen Anzeige der Sensoren), daher bleiben nur die o.g. 3 Befehle. Bit 7 ändert sich trotzdem, die Abhängigkeit ist derzeit noch unklar.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Status
+In der Antwort des Slave auf PID `0xBA` stecken Statusbits zu den Relais und s/w-Sensoren, jeweils '1' für aktiv und '0' für inaktiv:
 
-```
-cd existing_repo
-git remote add origin https://gitlab.womolin.de/pkoevesdi/arsilicii-ebl.git
-git branch -M main
-git push -uf origin main
-```
+Status|Byte #|Bit #
+---|---|---
+Pumpe|1|0
+Licht|1|1
+Außenlicht|1|2
+Frischwassersensor unten|2|1
+Frischwassersensor mittig|2|2
+Frischwassersensor oben|2|3
+Grauwassersensor oben|?|?
+Sicherung draußen|3|1
 
-## Integrate with your tools
+## Spannungswerte
+In der Antwort des Slave auf PID `0x78`, unabhängig von den 2 Befehlsbytes des Masters, stecken diese Spannungswerte:
 
-- [ ] [Set up project integrations](https://gitlab.womolin.de/pkoevesdi/arsilicii-ebl/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Spannung|Byte #|Wert
+---|---|---
+Aufbaubatterie|2|1/10 V
+Starterbatterie|4|1/10 V
