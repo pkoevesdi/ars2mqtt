@@ -1,5 +1,5 @@
 # Elektroblock ArSilicii CP5L24
-Dieser Elektroblock ist in unserm Giottline W63 verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert. So sieht das Bedienteil von außen aus:  
+Dieser Elektroblock ist in unserm Giottline W63 verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert. So sieht das Bedienteil aus:  
 ![Bedienteil](Bedienteil.jpg)
 
 Innenansichten:  
@@ -24,36 +24,43 @@ Byte 5 = Byte 1 ⊻ Byte 2 ⊻ Byte 3 ⊻ Byte 4
 Die XOR-Checksumme über alle 5 Bytes ergibt also `0x00` bei korrekter Übertragung.
 
 ## Schaltbefehle
-Schaltbefehle werden vom Master an den Slave in den beiden o.g. Bytes nach `0x78` übertragen. Innerhalb jedes Bytes haben einzelne Bits die folgende Bedeutung, jeweils '1' schaltet ein, '0' schaltet aus:
+Schaltbefehle werden vom Master an den Slave in den beiden o.g. Bytes nach `0x78` übertragen. Innerhalb jedes Bytes haben einzelne Bits die folgende Bedeutung:
 
-Funktion|Bit #
----|---
-Pumpe|0
-Licht|1
-Außenlicht|2
-?|7
-
-Alle anderen Bits sind bei mir bisher immer 0. Das Bedienteil hat auch nur 5 Knöpfe, 2 davon werden nicht an den Slave übermittelt (dienen der lokalen Anzeige der Sensoren), daher bleiben nur die o.g. 3 Befehle. Bit 7 ändert sich trotzdem, die Abhängigkeit ist derzeit noch unklar.
+Bit|7|...|2|1|0
+---|:---:|:---:|:---:|:---:|:---:
+Funktion|Füllstandsabfrage inaktiv|0|Außenlicht|Licht|Pumpe
 
 ## Status
 In der Antwort des Slave auf PID `0xBA` stecken Statusbits zu den Relais und s/w-Sensoren, jeweils '1' für aktiv und '0' für inaktiv:
+ 
+Byte|1|1|1|1
+---|:---:|:---:|:---:|:---:
+Bit|...|2|1|0
+Funktion|?|Außenlicht|Licht|Pumpe
 
-Status|Byte #|Bit #
----|---|---
-Pumpe|1|0
-Licht|1|1
-Außenlicht|1|2
-Frischwassersensor unten|2|1
-Frischwassersensor mittig|2|2
-Frischwassersensor oben|2|3
-Grauwassersensor oben|?|?
-Sicherung draußen|3|1
-Landstrom|?|?
+Byte|2|2|2|2|2
+---|:---:|:---:|:---:|:---:|:---:
+Bit|...|3|2|1|0
+Funktion|?|Frischwassersensor oben|Frischwassersensor mittig|Frischwassersensor unten|?
 
+Byte|3|3|3|3|3
+---|:---:|:---:|:---:|:---:|:---:
+Bit|...|5|...|1|0
+Funktion|?|Landstrom|?|Sicherung draußen|?
+
+Byte|4
+---|:---:
+Bit|...
+Funktion|?
+
+Byte|?
+---|:---:
+Bit|?
+Funktion|Grauwasser voll
 ## Spannungswerte
-In der Antwort des Slave auf PID `0x78`, unabhängig von den 2 Befehlsbytes des Masters, stecken diese Spannungswerte:
+In der Antwort des Slave auf PID `0x78`, unabhängig von den 2 Befehlsbytes des Masters, stecken Werte:
 
-Spannung|Byte #|Wert
----|---|---
-Aufbaubatterie|2|1/10 V
-Starterbatterie|4|1/10 V
+Byte|1|2|3|4
+---|:---:|:---:|:---:|:---:
+Funktion|?|Spannung Aufbaubatterie|?|Spannung Starterbatterie|?
+Wert|?|1/10 V|?|1/10 V
