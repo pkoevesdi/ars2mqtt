@@ -27,40 +27,40 @@ Die XOR-Checksumme über alle 5 Bytes ergibt also `0x00` bei korrekter Übertrag
 Schaltbefehle werden vom Master an den Slave in den beiden o.g. Bytes nach `0x78` übertragen. Innerhalb jedes Bytes haben einzelne Bits die folgende Bedeutung:
 
 Bit|7|...|2|1|0
----|:---:|:---:|:---:|:---:|:---:
+--- | :---: | :---: | :---: | :---: | :---:
 Funktion|Füllstandsabfrage inaktiv|0|Außenlicht|Licht|Pumpe
 
 ## Status
 In der Antwort des Slave auf PID `0xBA` stecken Statusbits zu den Relais und s/w-Sensoren, jeweils '1' für aktiv und '0' für inaktiv:
  
 Byte|1|1|1|1
----|:---:|:---:|:---:|:---:
+--- | :---: | :---: | :---: | :---:
 Bit|...|2|1|0
 Funktion|?|Außenlicht|Licht|Pumpe
 
 Byte|2|2|2|2|2
----|:---:|:---:|:---:|:---:|:---:
+--- | :---: | :---: | :---: | :---: | :---:
 Bit|...|3|2|1|0
 Funktion|?|Frischwassersensor oben|Frischwassersensor mittig|Frischwassersensor unten|?
 
 Byte|3|3|3|3|3
----|:---:|:---:|:---:|:---:|:---:
+--- | :---: | :---: | :---: | :---: | :---:
 Bit|...|5|...|1|0
 Funktion|?|Landstrom|?|Sicherung draußen|?
 
 Byte|4
----|:---:
+--- | :---:
 Bit|...
 Funktion|?
 
 Byte|?
----|:---:
+--- | :---:
 Bit|?
 Funktion|Grauwasser voll
 ## Spannungswerte
 In der Antwort des Slave auf PID `0x78`, unabhängig von den 2 Befehlsbytes des Masters, stecken Werte:
 
 Byte|1|2|3|4
----|:---:|:---:|:---:|:---:
+--- | :---: | :---: | :---: | :---:
 Funktion|?|Spannung Aufbaubatterie|?|Spannung Starterbatterie|?
 Wert|?|1/10 V|?|1/10 V
