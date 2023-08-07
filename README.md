@@ -1,16 +1,16 @@
 # Elektroblock ArSilicii CP5L24
 Dieser Elektroblock ist in unserm Giottline W63 und m.W. auch in manchen Rimor-Fahrzeugen verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert.  
 So sieht das Bedienteil bei uns aus:  
-![Bedienteil](Bedienteil.jpg)
+![Bedienteil](Bedienteil.jpg)  
 Hier ist die Anleitung zu dem System: https://www.manualslib.de/manual/685837/Arsilicii-Al-Bk20.html  
-im Foglenden beziehe ich mich auf diese Abbildung daraus:
-![Bedienteil](bedienteil_manual.png)
-Oben rechts ist die Füllstandsanzeige Frischwasser S1, unten rechts Grauwasser S2, unten links Grauwasser S3 (kombiniert mit Spannung Aufbaubatterie B1). Bei unserem Bedienteil guckt von S2 jedoch nur die dritte LED ("Grauwassersensor S2 mittel") hervor. Auch nur diese leuchtet, allerdings bei Aktivierung von EBL-Verbinder JP8, Pin 2, "Grauwassersensor S2 niedrig".  
-Die Anzeige S3 ist außer Betrieb.  
+im Foglenden beziehe ich mich auf diese Abbildung daraus:  
+![Bedienteil](bedienteil_manual.png)  
+Oben rechts ist die Füllstandsanzeige Frischwasser S1, unten rechts Grauwasser S2, unten links Grauwasser S3 (kombiniert mit Spannung Aufbaubatterie B1). Bei unserem Bedienteil guckt von S2 jedoch nur die dritte LED hervor. Auch nur diese leuchtet, allerdings bei Aktivierung von EBL-Verbinder JP8, Pin 2, "Grauwassersensor S2 niedrig" (statt "mittel").  
+Die Anzeige S3 ist außer Betrieb, deren LEDs werden nur als B1 benutzt.  
 Außerdem gibt es eine orange LED mittig zwischen den LEDs "Landstrom" und "Sicherung draußen". Guckt bei keinem Bedienteil nach vorn durch, aber leuchtet orange bei Aktivierung von EBL-Verbinder JP9, Pin 6, "Frischwassersensor S1 Überlauf".  
 Innenansichten unseres Bedienteils:  
-![Bedienteil Rückseite](Bedienteil_Rückseite.jpg)
-![Platine Bedienteil](Platine_Bedienteil.png)
+![Bedienteil Rückseite](Bedienteil_Rückseite.jpg)  
+![Platine Bedienteil](Platine_Bedienteil.png)  
 
 ## Grundlagen des Busses
 Das Bedienteil kommuniziert seriell über einen Draht mit dem Elektroblock. Der physische Layer ist soweit ich sehen kann der des [LIN](https://www.cs-group.de/wp-content/uploads/2016/11/LIN_Specification_Package_2.2A.pdf), es ist ein TJA2020-LIN-Transceiver im Bedienteil verbaut, s. Bild. Die Frames sind jedoch anders aufgebaut, es gibt z.B. kein Break Field und kein Sync Field (evtl. dient das untenstehende `0x55`als solches).  
