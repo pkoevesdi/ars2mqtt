@@ -1,0 +1,12 @@
+[Unit]
+Description=bridge between ArSilicii electro block and mqtt
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/python3 /root/arsilicii-ebl/src/ars2mqtt.py
+
+[Install]
+WantedBy=multi-user.target
