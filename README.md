@@ -1,5 +1,5 @@
 # Elektroblock ArSilicii CP5L24
-Dieser Elektroblock ist in unserm Giottline W63 und m.W. auch in manchen Rimor-Fahrzeugen verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert.  
+Dieser Elektroblock ist in unserm Giottline W63 und m.W. auch in manchen Rimor-Fahrzeugen verbaut. Hier sind meine Erkenntnisse über die Kommunikation zwischen dem Bedienteil und dem Elektroblock dokumentiert. Ferner gibt es unter `/src` noch einige Hilfprogramme, z.B. eine MQTT-Bridge in python nebst `systemd`-unit.
 So sieht das Bedienteil bei uns aus:  
 ![Bedienteil](Bedienteil.jpg)  
 Hier ist die Anleitung zu dem System: https://www.manualslib.de/manual/685837/Arsilicii-Al-Bk20.html  
