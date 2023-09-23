@@ -91,7 +91,7 @@ tableBA={
         "2":{'unique_id':'aussenlicht','name':'Außenlicht','component':'light','icon':'mdi:wall-sconce-flat'}
         },
     "1":{
-        "1":{'unique_id':'frischwasser','component':'sensor','name':'Frischwasser','device_class':'enum','icon':'mdi:car-coolant-level',
+        "1":{'unique_id':'frischwasser','component':'sensor','name':'Frischwasser','device_class':'enum','icon':'mdi:car-coolant-level'
 #        'value_template':'{% set mapper =  {'\
 #            '"0" : "< 1/3",'\
 #            '"1" : "1/3 ... 1/2",'\
