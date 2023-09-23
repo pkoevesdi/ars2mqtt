@@ -92,13 +92,14 @@ tableBA={
         },
     "1":{
         "1":{'unique_id':'frischwasser','component':'sensor','name':'Frischwasser','device_class':'enum','icon':'mdi:car-coolant-level',
-        'value_template':'{% set mapper =  {'\
-            '"0" : "< 1/3",'\
-            '"1" : "1/3 ... 1/2",'\
-            '"2" : "1/2 ... 2/3",'\
-            '"3" : "2/3 ... 3/4",'\
-            '"4" : "> 3/4"} %}'\
-                '{{mapper[value] if value in mapper else "ungültig"}}'},
+#        'value_template':'{% set mapper =  {'\
+#            '"0" : "< 1/3",'\
+#            '"1" : "1/3 ... 1/2",'\
+#            '"2" : "1/2 ... 2/3",'\
+#            '"3" : "2/3 ... 3/4",'\
+#            '"4" : "> 3/4"} %}'\
+#            '{{mapper[value] if value in mapper else "ungültig"}}'
+},
         "2":{'unique_id':'frischwasser','component':'sensor'},
         "3":{'unique_id':'frischwasser','component':'sensor'},
         "5":{'unique_id':'grauwasser','name':'Grauwasser','component':'binary_sensor','device_class':'problem'}
@@ -162,7 +163,7 @@ while True:
     lasttime = time.monotonic()
     sendCommand(0xba)
     bytesBA = list(ser.read(6))
-    print([hex(x) for x in bytesBA])
+#    print([hex(x) for x in bytesBA])
     if len(bytesBA)>=6 and bytesBA[0]==0xba and functools.reduce(lambda x, y: x ^ y, bytesBA[1:6])==0:
         bytesBA=bytesBA[1:5]
 #        diffs=sum([[[i, j, (x[0] & 1<<j)>>j] for j in range(8) if (x[0]^x[1]) & 1<<j] for i, x in enumerate(zip(bytesBA,bytesBAold)) if x[0]!=x[1]],[])
@@ -190,7 +191,7 @@ while True:
 
     sendCommand(0x78)
     bytes78 = list(ser.read(8))
-    print([hex(x) for x in bytes78])
+#    print([hex(x) for x in bytes78])
     if len(bytes78)>=8 and bytes78[0]==0x78 and functools.reduce(lambda x, y: x ^ y, bytes78[3:8])==0:
         bytes78=bytes78[3:7]
         # Exponentielle Glättung:
@@ -214,7 +215,7 @@ while True:
 
     while time.monotonic() - lasttime <= 0.008:
         pass
-    while time.monotonic() - lasttime <= frametime and commandbyte&0x7f == bytesBA[0]&0x7f:
+    while time.monotonic() - lasttime <= frametime and len(bytesBA)>0 and commandbyte&0x7f == bytesBA[0]&0x7f:
         pass
 #    if time.monotonic() - lasttime > 1:
 #        commandbyteold = commandbyte
