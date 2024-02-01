@@ -5,7 +5,7 @@ So sieht das Bedienteil bei uns aus:
 Hier ist die Anleitung zu dem System: https://www.manualslib.de/manual/685837/Arsilicii-Al-Bk20.html  
 im Foglenden beziehe ich mich auf diese Abbildung daraus:  
 ![Bedienteil](bedienteil_manual.png)  
-Oben rechts ist die Füllstandsanzeige Frischwasser S1, unten rechts Grauwasser S2, unten links Grauwasser S3 (kombiniert mit Spannung Aufbaubatterie B1). Bei unserem Bedienteil guckt von S2 jedoch nur die dritte LED hervor. Auch nur diese leuchtet, allerdings bei Aktivierung von EBL-Verbinder JP8, Pin 2, "Grauwassersensor S2 niedrig" (statt "mittel").  
+Oben rechts ist die Füllstandsanzeige Frischwasser S1, unten rechts Grauwasser S2, unten links Grauwasser S3, kombiniert mit Spannung Starterbatterie B1 und oben links Spannung Aufbaubatterie B2. Bei unserem Bedienteil guckt von S2 jedoch nur die dritte LED hervor. Auch nur diese leuchtet, allerdings bei Aktivierung von EBL-Verbinder JP8, Pin 2, "Grauwassersensor S2 niedrig" (statt "mittel").  
 Die Anzeige S3 ist außer Betrieb, deren LEDs werden nur als B1 benutzt.  
 Außerdem gibt es eine orange LED mittig zwischen den LEDs "Landstrom" und "Sicherung draußen". Guckt bei keinem Bedienteil nach vorn durch, aber leuchtet orange bei Aktivierung von EBL-Verbinder JP9, Pin 6, "Frischwassersensor S1 Überlauf".  
 Innenansichten unseres Bedienteils:  
@@ -15,7 +15,7 @@ Innenansichten unseres Bedienteils:
 ## Grundlagen des Busses
 Das Bedienteil kommuniziert seriell über einen Draht mit dem Elektroblock. Der physische Layer ist soweit ich sehen kann der des [LIN](https://www.cs-group.de/wp-content/uploads/2016/11/LIN_Specification_Package_2.2A.pdf), es ist ein TJA2020-LIN-Transceiver im Bedienteil verbaut, s. Bild. Die Frames sind jedoch anders aufgebaut, es gibt z.B. kein Break Field und kein Sync Field (evtl. dient das untenstehende `0x55`als solches).  
 Das Bedienfeld ist der Master, der Elektroblock der Slave.  
-Datenübertragung erfolgt mit dem LSB (Bit 0) zuerst.  
+Datenübertragung erfolgt mit 19,2 kBd und LSB (Bit 0) zuerst.  
 Der Master startet etwa alle 8,2 ms einen Frame mit dem Senden eines von 7 verschiedenen PID-Bytes in UART-Konfiguration 8O1, also Odd-Parity. Die Frameanfänge werden immer in dieser Reihenfolge wiederholt:  
 `0x55 0x78 0x49 0xBA 0x55 0xA6 0x8B 0x64`  
 Alle PIDs erfüllen die LIN-Partität:  
